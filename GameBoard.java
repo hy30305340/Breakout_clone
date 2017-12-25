@@ -1,7 +1,6 @@
 import javax.swing.Timer;
 import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,8 +21,8 @@ public class GameBoard extends JPanel implements KeyListener,ActionListener{
 
     private int ballposX = 100;
     private int ballposY = 300;
-    private int ballXdir = -1;
-    private int ballYdir = -2;
+    private int ballXdir = -1;//ball moving direction
+    private int ballYdir = -2;//ball moving direction
 
     private int playerX = 300;
 
@@ -48,13 +47,32 @@ public class GameBoard extends JPanel implements KeyListener,ActionListener{
         g.fillRect(playerX,550,100,8);
         // ball
         g.setColor(Color.yellow);
-        g.fillRect(ballposX,ballposY,20,20);
+        g.fillOval(ballposX,ballposY,20,20);
+
+        g.dispose();
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        timer.start();
+        if(play){
+            ballposX += ballXdir;
+            ballposY += ballYdir;
+            if(ballposX<0){
+                ballXdir = -ballXdir;
+            }
+            if(ballposY<0){
+                ballYdir = -ballYdir;
+            }
+            if(ballposX>670){
+                ballXdir = -ballXdir;
+            }
+            if(new Rectangle(ballposX,ballposY,20,20).intersects(new Rectangle(playerX,550,100,8))){
+                ballYdir = -ballYdir;
+            }
+        }
+        repaint();
     }
 
     @Override
@@ -64,11 +82,6 @@ public class GameBoard extends JPanel implements KeyListener,ActionListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_RIGHT){
             if(playerX >= 600){
                 playerX = 600;
@@ -83,6 +96,11 @@ public class GameBoard extends JPanel implements KeyListener,ActionListener{
                 moveLeft();
             }
         }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
     public void moveRight(){
         play = true;
